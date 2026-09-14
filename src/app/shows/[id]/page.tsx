@@ -1,5 +1,6 @@
 import { getShowById } from "@/lib/tvmaze";
 import Image from "next/image";
+import WatchlistButton from "@/components/WatchlistButton";
 
 interface ShowPageProps {
   params: Promise<{ id: string }>;
@@ -33,6 +34,8 @@ export default async function ShowPage({ params }: ShowPageProps) {
             Ocjena: {show.rating.average ?? "N/A"}
           </p>
           <p className="mt-1 text-gray-600">{show.genres.join(", ")}</p>
+
+          <WatchlistButton show={show} />
 
           {show.summary && (
             <div
