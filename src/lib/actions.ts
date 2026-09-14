@@ -29,10 +29,9 @@ export async function removeFromWatchlist(id: number) {
   revalidatePath(`/shows/${id}`);
 }
 
-export async function updateWatchlistStatus(
-  id: number,
-  status: WatchlistItem["status"],
-) {
+export async function updateWatchlistStatus(id: number, formData: FormData) {
+  const status = formData.get("status") as WatchlistItem["status"];
+
   const watchlist = await readWatchlist();
   const updated = watchlist.map((show) =>
     show.id === id ? { ...show, status } : show,
