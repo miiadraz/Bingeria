@@ -20,3 +20,5 @@ export const reviewSchema = z
   });
 
 export type ReviewFormValues = z.infer<typeof reviewSchema>;
+export type ReviewFormInput = z.input<typeof reviewSchema>;
+export type ReviewFormOutput = z.output<typeof reviewSchema>;
