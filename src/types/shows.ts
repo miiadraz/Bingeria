@@ -22,11 +22,20 @@ export interface SearchResult {
   show: Show;
 }
 
+export interface Review {
+  rating: number;
+  episodeReached: number;
+  comment: string;
+  containsSpoilers: boolean;
+}
+
 export interface WatchlistItem {
   id: number;
   name: string;
   image: string | null;
   status: "watching" | "planned" | "completed";
+  addedAt: number;
+  review?: Review;
 }
 
 export interface Episode {
