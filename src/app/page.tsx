@@ -5,6 +5,7 @@ import SearchBar from "@/components/SearchBar";
 import { searchShows } from "@/lib/tvmaze";
 import type { Show } from "@/types/shows";
 import ShowCard from "@/components/ShowCard";
+import Link from "next/link";
 
 export default function Home() {
   const [shows, setShows] = useState<Show[]>([]);
@@ -25,6 +26,12 @@ export default function Home() {
   return (
     <main className="min-h-screen p-8">
       <h1 className="text-3xl font-bold">Bingeria</h1>
+      <Link
+        href="/watchlist"
+        className="mt-2 inline-block text-blue-600 hover:underline"
+      >
+        Moja watchlista →
+      </Link>
       <p className="mt-2 text-gray-500">Tvoj tracker TV serija</p>
 
       <div className="mt-6">
