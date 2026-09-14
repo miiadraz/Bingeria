@@ -1,7 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import WatchlistButton from "@/components/WatchlistButton";
-import { getShowById, getShowEpisodes } from "@/lib/tvmaze";
 import EpisodeList from "@/components/EpisodeList";
+import { getShowById, getShowEpisodes } from "@/lib/tvmaze";
 import { stripHtml } from "@/lib/sanitize";
 
 interface ShowPageProps {
@@ -10,12 +12,24 @@ interface ShowPageProps {
 
 export default async function ShowPage({ params }: ShowPageProps) {
   const { id } = await params;
-  const show = await getShowById(id);
-  const episodes = await getShowEpisodes(id);
+
+  // Paralelni dohvat — oba poziva kreću istovremeno, ne jedan nakon drugog.
+  const [show, episodes] = await Promise.all([
+    getShowById(id),
+    getShowEpisodes(id),
+  ]);
+
+  if (!show) {
+    notFound();
+  }
 
   return (
     <main className="min-h-screen p-8">
-      <div className="flex gap-6">
+      <Link href="/" className="text-sm text-blue-600 hover:underline">
+        ← Natrag na katalog
+      </Link>
+
+      <div className="mt-4 flex gap-6">
         {show.image && (
           <Image
             src={show.image.original}
@@ -36,6 +50,7 @@ export default async function ShowPage({ params }: ShowPageProps) {
           <p className="mt-1 text-gray-500">
             Ocjena: {show.rating.average ?? "N/A"}
           </p>
+          <p className="mt-1 text-gray-500">Broj epizoda: {episodes.length}</p>
           <p className="mt-1 text-gray-600">{show.genres.join(", ")}</p>
 
           <WatchlistButton show={show} />
