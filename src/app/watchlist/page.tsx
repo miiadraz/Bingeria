@@ -5,8 +5,19 @@ import { removeFromWatchlist } from "@/lib/actions";
 import StatusSelect from "@/components/StatusSelect";
 import ReviewForm from "@/components/ReviewForm";
 import ReviewDisplay from "@/components/ReviewDisplay";
+import WatchlistStats from "@/components/WatchlistStats";
+import SortButtons from "@/components/SortButtons";
 
-export default async function WatchlistPage() {
+interface WatchlistPageProps {
+  searchParams: Promise<{ sort?: string }>;
+}
+
+export default async function WatchlistPage({
+  searchParams,
+}: WatchlistPageProps) {
+  const { sort } = await searchParams;
+  const currentSort = sort === "rating" ? "rating" : "date";
+
   const watchlist = await readWatchlist();
 
   if (watchlist.length === 0) {
@@ -20,12 +31,31 @@ export default async function WatchlistPage() {
     );
   }
 
+  // Kopiramo niz prije sortiranja — .sort() mutira original na mjestu,
+  // a podatak koji smo dohvatile ne smijemo mijenjati izravno.
+  const sortedWatchlist = [...watchlist].sort((a, b) => {
+    if (currentSort === "rating") {
+      const ratingA = a.review?.rating ?? -1;
+      const ratingB = b.review?.rating ?? -1;
+      return ratingB - ratingA;
+    }
+    return b.addedAt - a.addedAt;
+  });
+
   return (
     <main className="min-h-screen p-8">
       <h1 className="text-3xl font-bold">Moja watchlista</h1>
 
+      <div className="mt-4">
+        <WatchlistStats watchlist={watchlist} />
+      </div>
+
+      <div className="mt-4">
+        <SortButtons currentSort={currentSort} />
+      </div>
+
       <ul className="mt-6 space-y-3">
-        {watchlist.map((item) => {
+        {sortedWatchlist.map((item) => {
           async function removeAction(_formData: FormData) {
             "use server";
             await removeFromWatchlist(item.id);
