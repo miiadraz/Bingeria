@@ -1,35 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
-interface SearchBarProps {
-  onSearch: (query: string) => void;
-}
+export default function SearchBar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-export default function SearchBar({ onSearch }: SearchBarProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const debouncedQuery = useDebouncedValue(query, 400);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (query.trim() === "") return;
-    onSearch(query);
-  }
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (debouncedQuery.trim()) {
+      params.set("q", debouncedQuery.trim());
+    } else {
+      params.delete("q");
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }, [debouncedQuery]);
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2">
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Pretraži serije..."
-        className="flex-1 rounded-md border border-gray-300 px-4 py-2 text-black"
-      />
-      <button
-        type="submit"
-        className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-      >
-        Pretraži
-      </button>
-    </form>
+    <input
+      type="text"
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      placeholder="Pretraži serije..."
+      className="w-full rounded-md border border-gray-300 px-4 py-2 text-black"
+    />
   );
 }
