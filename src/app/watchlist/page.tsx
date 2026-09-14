@@ -24,7 +24,10 @@ export default async function WatchlistPage() {
 
       <ul className="mt-6 space-y-3">
         {watchlist.map((item) => {
-          const removeAction = removeFromWatchlist.bind(null, item.id);
+          async function removeAction(_formData: FormData) {
+            "use server";
+            await removeFromWatchlist(item.id);
+          }
 
           return (
             <li
