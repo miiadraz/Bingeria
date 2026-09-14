@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Show } from "@/types/shows";
+import Link from "next/link";
 
 interface ShowCardProps {
   show: Show;
@@ -7,7 +8,10 @@ interface ShowCardProps {
 
 export default function ShowCard({ show }: ShowCardProps) {
   return (
-    <div className="flex gap-4 rounded-lg border border-gray-200 p-4 shadow-sm">
+    <Link
+      href={`/shows/${show.id}`}
+      className="flex gap-4 rounded-lg border border-gray-200 p-4 shadow-sm hover:bg-gray-50"
+    >
       {show.image ? (
         <Image
           src={show.image.medium}
@@ -32,6 +36,6 @@ export default function ShowCard({ show }: ShowCardProps) {
         </p>
         <p className="mt-1 text-sm text-gray-600">{show.genres.join(", ")}</p>
       </div>
-    </div>
+    </Link>
   );
 }
