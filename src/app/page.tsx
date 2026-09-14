@@ -2,23 +2,28 @@
 
 import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
+import ShowCard from "@/components/ShowCard";
 import { searchShows } from "@/lib/tvmaze";
 import type { Show } from "@/types/shows";
-import ShowCard from "@/components/ShowCard";
 
 export default function Home() {
   const [shows, setShows] = useState<Show[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   async function handleSearch(query: string) {
     setLoading(true);
+    setError(null);
     try {
       const results = await searchShows(query);
       setShows(results);
     } catch (err) {
-      console.error(err);
+      setError("Greška prilikom pretrage. Pokušaj ponovno.");
+      setShows([]);
     } finally {
       setLoading(false);
+      setHasSearched(true);
     }
   }
 
@@ -31,7 +36,13 @@ export default function Home() {
         <SearchBar onSearch={handleSearch} />
       </div>
 
-      {loading && <p className="mt-4">Učitavanje...</p>}
+      {loading && <p className="mt-4 text-gray-500">Učitavanje...</p>}
+
+      {error && <p className="mt-4 text-red-600">{error}</p>}
+
+      {!loading && !error && hasSearched && shows.length === 0 && (
+        <p className="mt-4 text-gray-500">Nema rezultata za tu pretragu.</p>
+      )}
 
       <ul className="mt-4 space-y-2">
         {shows.map((show) => (
