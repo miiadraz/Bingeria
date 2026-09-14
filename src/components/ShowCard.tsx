@@ -1,12 +1,13 @@
 import Image from "next/image";
-import type { Show } from "@/types/shows";
 import Link from "next/link";
+import type { Show } from "@/types/shows";
 
 interface ShowCardProps {
   show: Show;
+  compact?: boolean;
 }
 
-export default function ShowCard({ show }: ShowCardProps) {
+export default function ShowCard({ show, compact = false }: ShowCardProps) {
   return (
     <Link
       href={`/shows/${show.id}`}
@@ -34,7 +35,9 @@ export default function ShowCard({ show }: ShowCardProps) {
         <p className="text-sm text-gray-500">
           Ocjena: {show.rating.average ?? "N/A"}
         </p>
-        <p className="mt-1 text-sm text-gray-600">{show.genres.join(", ")}</p>
+        {!compact && (
+          <p className="mt-1 text-sm text-gray-600">{show.genres.join(", ")}</p>
+        )}
       </div>
     </Link>
   );
