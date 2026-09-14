@@ -2,6 +2,7 @@ import Image from "next/image";
 import WatchlistButton from "@/components/WatchlistButton";
 import { getShowById, getShowEpisodes } from "@/lib/tvmaze";
 import EpisodeList from "@/components/EpisodeList";
+import { stripHtml } from "@/lib/sanitize";
 
 interface ShowPageProps {
   params: Promise<{ id: string }>;
@@ -40,10 +41,9 @@ export default async function ShowPage({ params }: ShowPageProps) {
           <WatchlistButton show={show} />
 
           {show.summary && (
-            <div
-              className="mt-4 max-w-2xl text-sm"
-              dangerouslySetInnerHTML={{ __html: show.summary }}
-            />
+            <p className="mt-4 max-w-2xl whitespace-pre-line text-sm text-gray-700">
+              {stripHtml(show.summary)}
+            </p>
           )}
 
           <EpisodeList episodes={episodes} />
