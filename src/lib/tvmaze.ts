@@ -14,3 +14,13 @@ export async function searchShows(query: string): Promise<Show[]> {
   const results: SearchResult[] = await res.json();
   return results.map((result) => result.show);
 }
+
+export async function getShowById(id: string): Promise<Show> {
+  const res = await fetch(`${BASE_URL}/shows/${id}`);
+
+  if (!res.ok) {
+    throw new Error("Serija nije pronađena");
+  }
+
+  return res.json();
+}
