@@ -28,3 +28,12 @@ export interface WatchlistItem {
   image: string | null;
   status: "watching" | "planned" | "completed";
 }
+
+export interface Episode {
+  id: number;
+  name: string;
+  season: number;
+  number: number;
+  airdate: string;
+  summary: string | null;
+}
