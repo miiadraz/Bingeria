@@ -17,7 +17,9 @@ interface StatusSelectProps {
 
 export default function StatusSelect({ id, status }: StatusSelectProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const updateAction = updateWatchlistStatus.bind(null, id);
+  async function updateAction(formData: FormData) {
+    await updateWatchlistStatus(id, formData);
+  }
 
   return (
     <form ref={formRef} action={updateAction}>
