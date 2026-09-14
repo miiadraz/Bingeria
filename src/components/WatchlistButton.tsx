@@ -1,39 +1,46 @@
-"use client";
-
-import { useWatchlist } from "@/lib/useWatchlist";
-import type { Show } from "@/types/shows";
+import { addToWatchlist, removeFromWatchlist } from "@/lib/actions";
+import type { Show, WatchlistItem } from "@/types/shows";
 
 interface WatchlistButtonProps {
   show: Show;
+  isInWatchlist: boolean;
 }
 
-export default function WatchlistButton({ show }: WatchlistButtonProps) {
-  const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useWatchlist();
-  const added = isInWatchlist(show.id);
+export default function WatchlistButton({
+  show,
+  isInWatchlist,
+}: WatchlistButtonProps) {
+  if (isInWatchlist) {
+    const removeAction = removeFromWatchlist.bind(null, show.id);
 
-  function handleClick() {
-    if (added) {
-      removeFromWatchlist(show.id);
-    } else {
-      addToWatchlist({
-        id: show.id,
-        name: show.name,
-        image: show.image?.medium ?? null,
-        status: "planned",
-      });
-    }
+    return (
+      <form action={removeAction}>
+        <button
+          type="submit"
+          className="mt-4 rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+        >
+          Ukloni iz watchliste
+        </button>
+      </form>
+    );
   }
 
+  const item: WatchlistItem = {
+    id: show.id,
+    name: show.name,
+    image: show.image?.medium ?? null,
+    status: "planned",
+  };
+  const addAction = addToWatchlist.bind(null, item);
+
   return (
-    <button
-      onClick={handleClick}
-      className={`mt-4 rounded-md px-4 py-2 text-white ${
-        added
-          ? "bg-red-600 hover:bg-red-700"
-          : "bg-green-600 hover:bg-green-700"
-      }`}
-    >
-      {added ? "Ukloni iz watchliste" : "Dodaj u watchlistu"}
-    </button>
+    <form action={addAction}>
+      <button
+        type="submit"
+        className="mt-4 rounded-md bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+      >
+        Dodaj u watchlistu
+      </button>
+    </form>
   );
 }

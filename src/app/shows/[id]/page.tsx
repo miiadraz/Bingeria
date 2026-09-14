@@ -5,6 +5,7 @@ import WatchlistButton from "@/components/WatchlistButton";
 import EpisodeList from "@/components/EpisodeList";
 import { getShowById, getShowEpisodes } from "@/lib/tvmaze";
 import { stripHtml } from "@/lib/sanitize";
+import { readWatchlist } from "@/lib/db";
 
 interface ShowPageProps {
   params: Promise<{ id: string }>;
@@ -12,12 +13,17 @@ interface ShowPageProps {
 
 export default async function ShowPage({ params }: ShowPageProps) {
   const { id } = await params;
-
-  // Paralelni dohvat — oba poziva kreću istovremeno, ne jedan nakon drugog.
-  const [show, episodes] = await Promise.all([
+  const [show, episodes, watchlist] = await Promise.all([
     getShowById(id),
     getShowEpisodes(id),
+    readWatchlist(),
   ]);
+
+  if (!show) {
+    notFound();
+  }
+
+  const isInWatchlist = watchlist.some((item) => item.id === show.id);
 
   if (!show) {
     notFound();
@@ -53,8 +59,7 @@ export default async function ShowPage({ params }: ShowPageProps) {
           <p className="mt-1 text-gray-500">Broj epizoda: {episodes.length}</p>
           <p className="mt-1 text-gray-600">{show.genres.join(", ")}</p>
 
-          <WatchlistButton show={show} />
-
+          <WatchlistButton show={show} isInWatchlist={isInWatchlist} />
           {show.summary && (
             <p className="mt-4 max-w-2xl whitespace-pre-line text-sm text-gray-700">
               {stripHtml(show.summary)}
