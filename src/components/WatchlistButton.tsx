@@ -11,7 +11,10 @@ export default function WatchlistButton({
   isInWatchlist,
 }: WatchlistButtonProps) {
   if (isInWatchlist) {
-    const removeAction = removeFromWatchlist.bind(null, show.id);
+    async function removeAction(_formData: FormData) {
+      "use server";
+      await removeFromWatchlist(show.id);
+    }
 
     return (
       <form action={removeAction}>
@@ -25,13 +28,17 @@ export default function WatchlistButton({
     );
   }
 
-  const item: WatchlistItem = {
-    id: show.id,
-    name: show.name,
-    image: show.image?.medium ?? null,
-    status: "planned",
-  };
-  const addAction = addToWatchlist.bind(null, item);
+  async function addAction(_formData: FormData) {
+    "use server";
+    const item: WatchlistItem = {
+      id: show.id,
+      name: show.name,
+      image: show.image?.medium ?? null,
+      status: "planned",
+      addedAt: Date.now(),
+    };
+    await addToWatchlist(item);
+  }
 
   return (
     <form action={addAction}>
