@@ -4,6 +4,7 @@ import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import { searchShows } from "@/lib/tvmaze";
 import type { Show } from "@/types/shows";
+import ShowCard from "@/components/ShowCard";
 
 export default function Home() {
   const [shows, setShows] = useState<Show[]>([]);
@@ -34,7 +35,9 @@ export default function Home() {
 
       <ul className="mt-4 space-y-2">
         {shows.map((show) => (
-          <li key={show.id}>{show.name}</li>
+          <li key={show.id}>
+            <ShowCard show={show} />
+          </li>
         ))}
       </ul>
     </main>
