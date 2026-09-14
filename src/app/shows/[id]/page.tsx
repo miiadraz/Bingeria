@@ -1,6 +1,7 @@
-import { getShowById } from "@/lib/tvmaze";
 import Image from "next/image";
 import WatchlistButton from "@/components/WatchlistButton";
+import { getShowById, getShowEpisodes } from "@/lib/tvmaze";
+import EpisodeList from "@/components/EpisodeList";
 
 interface ShowPageProps {
   params: Promise<{ id: string }>;
@@ -9,6 +10,7 @@ interface ShowPageProps {
 export default async function ShowPage({ params }: ShowPageProps) {
   const { id } = await params;
   const show = await getShowById(id);
+  const episodes = await getShowEpisodes(id);
 
   return (
     <main className="min-h-screen p-8">
@@ -43,6 +45,8 @@ export default async function ShowPage({ params }: ShowPageProps) {
               dangerouslySetInnerHTML={{ __html: show.summary }}
             />
           )}
+
+          <EpisodeList episodes={episodes} />
         </div>
       </div>
     </main>
