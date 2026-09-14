@@ -1,8 +1,9 @@
 [
   {
-    "id": 23,
-    "name": "Once Upon a Time in Wonderland",
-    "image": "https://static.tvmaze.com/uploads/images/medium_portrait/73/183661.jpg",
-    "status": "planned"
+    "id": 2,
+    "name": "Person of Interest",
+    "image": "https://static.tvmaze.com/uploads/images/medium_portrait/163/407679.jpg",
+    "status": "planned",
+    "addedAt": 1789396403444
   }
 ]
